@@ -40,7 +40,7 @@ Please enter the port for node2 [7574]:
 SetupMovies.bat
 movies.csv
 ~~~~
-2. Double-click on SetupMovies.bat. This file will create a new collection, configure fields, and index in the data from the movies.csv file.
+2. Double-click on SetupMovies.bat. This will create a new collection, configure fields, and index in the data from the movies.csv file.
 3. To verify that the data was successfully processed, open http://localhost:8983/solr/#/movies/query and press the "Execute Query" button. JSON records should be returned and the numFound value should indicate that 45403 records were found.
 
 ## Run the SolrCoreSearch web app:
