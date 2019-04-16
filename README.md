@@ -46,9 +46,10 @@ movies.csv
 ## Run the SolrCoreSearch web app:
 
 1. Clone the project from the GitHub repository. 
-2. Install dependencies using nuget. 
-3. Compile and run the app.
-4. Now you're ready to search!
+2. Open SolrCoreSearch.sln
+3. Install dependencies using nuget. 
+4. Compile and run the app.
+5. Now you're ready to search!
 
 
 
