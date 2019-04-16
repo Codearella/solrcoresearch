@@ -23,7 +23,8 @@ namespace SolrCoreSearch.Controllers
             // Get search result text from the Lucene Solr Server.
             using (var hc = new HttpClient())
             {
-                 var searchString = $"http://localhost:8983/solr/movies/select?q={q}" +
+                 var searchString = $"http://localhost:8983/solr/movies/select?defType=edismax&sow=false" +
+                    $"&q={q}" +
                     $"&start={start}" +
                     $"&rows={rows}";                  
 

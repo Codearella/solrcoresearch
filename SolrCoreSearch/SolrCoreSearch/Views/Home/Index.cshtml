@@ -94,7 +94,7 @@
                 var item = results[i];
                 lines.push("<div class='panel panel-primary'>");
                 lines.push("<div class='panel-heading'>");
-                lines.push("<h3 class='panel-title'><a href='https://www.imdb.com/title/"+ htmlEncode(item.imdb_id) +"'>" + htmlEncode(item.title) + "</a></h3>");
+                lines.push("<h3 class='panel-title'><a href='https://www.imdb.com/title/"+ htmlEncode(item.id) +"'>" + htmlEncode(item.title) + "</a></h3>");
                 lines.push("</div>");
                 lines.push("<div class='panel-body'>");
                 if (item.tagline) lines.push("<div class='tagline'>" + item.tagline + "</div>");
