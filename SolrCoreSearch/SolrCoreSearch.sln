@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolrCoreSearch", "SolrCoreSearch\SolrCoreSearch.csproj", "{7AB3D40F-EFA7-4257-BD37-5AD6BC7457C3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7AB3D40F-EFA7-4257-BD37-5AD6BC7457C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AB3D40F-EFA7-4257-BD37-5AD6BC7457C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AB3D40F-EFA7-4257-BD37-5AD6BC7457C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AB3D40F-EFA7-4257-BD37-5AD6BC7457C3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1B161A94-9882-4221-9EEE-025128A0B063}
+	EndGlobalSection
+EndGlobal

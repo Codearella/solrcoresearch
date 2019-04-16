@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div style="max-width: 40em; margin: 0 auto">
+    <div class="input-group">
+        <input id="searchtext" type="text" name="search" placeholder="Search" class="form-control">
+        <span class="input-group-btn">
+            <button id="searchbutton" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+        </span>
+    </div>
+
+    <div id="searchresults" style="margin-top: 1em"></div>
+
+    <div id="searchstatus"></div>
+
+    <div>
+        <span id="resulttext"></span>
+    </div>
+</div>
+
+
+@*@Model.SearchResultText*@
+
+@section Head
+{
+    <style type="text/css">
+        /* Add padding to the subsequent div*/
+        .panel-body div + div {
+            padding-top: 0.5em
+        }
+
+        .tagline {
+            font-weight: bold;
+        }
+
+        .overview {
+            
+        }
+
+        .panel-title { font-weight:bold; }
+    </style>
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+
+
+        // Number of results rows to send back at a time (10).
+        var pageRows = 10;
+
+        var $converter = $("<div>");
+        function htmlEncode(s) {
+            return $converter.text(s).html();
+        }
+
+        // Split the returned date into day, month, and year components, then return the date in a more human-readable format.
+        function humanDate(zulu) {
+            var year = +zulu.substr(0, 4);
+            var month = +zulu.substr(5, 2) - 1;
+            var day = +zulu.substr(8, 2);
+
+            return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month] +
+                " " + day + ", " + year;
+        }
+
+        // Return a list of items in a human-readable format. 
+        function humanList(array) {
+            if (!array || !array.length) return "";
+            if (array.length === 1) return array[0];
+            var items = array.slice();
+            items[items.length - 1] = "and " + items[items.length - 1];
+            return items.join(items.length === 2 ? " " : ", ");
+        }
+
+        // Cause "Enter" button to execute the search (i.e. same as clicking the search icon).
+        $("#searchtext").keydown(function (e) {
+            if (e.keyCode === 13) {
+                $("#searchbutton").click();
+                e.preventDefault();
+            }
+        });
+
+        // Apply formatting and append new results.
+        function addResults(start, results) {
+
+            var lines = []; // Array where the search results are stored (in preparation for HTML output)
+
+            var resultCount = results.length;
+
+            // Loop through the results and format for display.
+            for (var i = 0; i < resultCount; ++i) {
+                var item = results[i];
+                lines.push("<div class='panel panel-primary'>");
+                lines.push("<div class='panel-heading'>");
+                lines.push("<h3 class='panel-title'><a href='https://www.imdb.com/title/"+ htmlEncode(item.imdb_id) +"'>" + htmlEncode(item.title) + "</a></h3>");
+                lines.push("</div>");
+                lines.push("<div class='panel-body'>");
+                if (item.tagline) lines.push("<div class='tagline'>" + item.tagline + "</div>");
+                if (item.overview) lines.push("<div class='overview'>" + item.overview + "</div>");
+                if (item.release_date) lines.push("<div>Initially released " + humanDate(item.release_date) + "</div>");
+                if (item.production_companies) lines.push("<div>Produced by " + humanList(item.production_companies) + "</div>");
+                lines.push("</div>");
+                lines.push("</div>");
+            }
+
+            // Append the new results.
+            $("#searchresults").append(lines.join(""));
+
+
+            // Add a "more" button if there may be more results (e.g. 10 results requested, 10 results returned.)
+            if (resultCount >= pageRows) {
+                $("#searchresults").append("<p>" +
+                    "<button id='moreresults' class='btn btn-success' data-start='" + (start + resultCount) + "'>More Results</button>" +
+                    "</p>");
+            }
+        }
+
+        // Initial seach button click (returns the intial set of results.)
+        $("#searchbutton").click(function () {
+            $.ajax({
+                type: "post",
+                url: "/home/search?q=" + encodeURIComponent($("#searchtext").val()) + "&start=0&rows=" + pageRows,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (ajaxResponse) {
+                    $("#searchresults").empty();
+
+                    $("#searchresults").append("<p>Records found: " + ajaxResponse.response.numFound + "</p>");
+
+                    addResults(0, ajaxResponse.response.docs)
+                },
+                failure: function (ajaxResponse) {
+                    document.getElementById("resulttext").textContent = "Failure! " + ajaxResponse.responseText;
+                },
+                error: function (ajaxResponse) {
+                    document.getElementById("resulttext").textContent = "Error! " + ajaxResponse.responseText;
+                }
+            });
+        });
+
+        // Removes the "More Results" button and appends the additional results (if applicable).
+        $(document).on("click", "#moreresults", function (e) {
+            var start = parseInt($(this).data("start"), 10);            
+
+            $.ajax({
+                type: "POST",
+                url: "/home/search?q=" + encodeURIComponent($("#searchtext").val()) + "&start=" + $(this).data("start") + "&rows=" + pageRows,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (ajaxResponse) {
+                    $("#moreresults").closest("p").remove();
+
+                    addResults(start, ajaxResponse.response.docs);
+                }
+            })
+        });
+
+    </script>
+}
+
