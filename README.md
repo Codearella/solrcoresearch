@@ -31,7 +31,7 @@ Please enter the port for node1 [8983]:
 Please enter the port for node2 [7574]:
 ~~~~
 5. Press **enter** to accept the default port (7574).
-6. Wait while Solr starts up each node. 
+6. :coffee: Wait while Solr starts up each node.
 ~~~~
 Please provide a name for your new collection: [gettingstarted]
 ~~~~
@@ -44,7 +44,7 @@ How many shards would you like to split gettingstarted into? [2]
 How many replicas per shard would you like to create? [2]
 ~~~~
 9. Press **enter** to accept the default (2 replicas per shard).
-10. Wait for the setup to complete.
+10. :coffee: Wait for the setup to complete. 
 11. When complete, open http://localhost:8983/solr/#/ in your browser and verify that the Solr dashboard appears.
 
 ## Configure the Movies collection on the Solr server
