@@ -10,9 +10,8 @@
         </span>
     </div>
 
-    <div id="searchresults" style="margin-top: 1em"></div>
-
-    <div id="searchstatus"></div>
+    <div id="searchresults" style="margin-top: 1em">
+    </div>
 
     <div>
         <span id="resulttext"></span>
@@ -101,6 +100,7 @@
                 if (item.overview) lines.push("<div class='overview'>" + item.overview + "</div>");
                 if (item.release_date) lines.push("<div>Initially released " + humanDate(item.release_date) + "</div>");
                 if (item.production_companies) lines.push("<div>Produced by " + humanList(item.production_companies) + "</div>");
+                //if (item.production_companies) lines.push("<div>Genres: " + humanList(item.genres) + "</div>");
                 lines.push("</div>");
                 lines.push("</div>");
             }

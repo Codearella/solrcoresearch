@@ -24,9 +24,9 @@ namespace SolrCoreSearch.Controllers
             using (var hc = new HttpClient())
             {
                  var searchString = $"http://localhost:8983/solr/movies/select?defType=edismax&sow=false" +
-                    $"&q={q}" +
-                    $"&start={start}" +
-                    $"&rows={rows}";                  
+                    $"&q={Uri.EscapeUriString(q)}" +
+                    $"&start={Uri.EscapeUriString(start.ToString())}" +
+                    $"&rows={Uri.EscapeUriString(rows.ToString())}";                  
 
                 var response = await hc.GetStringAsync(searchString);
 
