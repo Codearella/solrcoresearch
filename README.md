@@ -4,7 +4,7 @@ This is an ASP.NET Core MVC search web app that uses a Apache Solr (Lucene) serv
 ## Prerequisites
 
 1. Windows 10 *(Other versions may also work but have not been tested.)*
-2. Java 8 or later *(Verify using **java --version** from the command prompt. You may also need to configure your PATH system variable under System Properties > Environment Variables.)*         	
+2. Java 8 or later *(Verify using **java -version** from the command prompt. You may also need to configure your PATH system variable under System Properties > Environment Variables.)*         	
 3. curl version 7.55.1 or later
 4. solr-8.0.0 *(For Windows, use the solr-8.0.0.zip version of the file.)*
       http://lucene.apache.org/solr/downloads.html
