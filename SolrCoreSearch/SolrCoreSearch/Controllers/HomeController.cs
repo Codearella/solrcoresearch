@@ -33,7 +33,32 @@ namespace SolrCoreSearch.Controllers
                 return Content(response, "application/json");
             }
         }
-        
+
+
+        public async Task<IActionResult> AutocompleteSearch(string q, int start, int rows)
+        {
+            // Get search result text from the Lucene Solr Server.
+            using (var hc = new HttpClient())
+            {
+                //http://localhost:8983/solr/movies/select?df=title&fl=title&q=the%20fiv*
+                var searchString = $"http://localhost:8983/solr/movies/select?df=title&fl=title" +
+                   $"&hl=on" +
+                   $"&hl.fl=title" +
+                   $"&hl.simple.post=%3C%2Fstrong%3E" +
+                   $"&hl.simple.pre=%3Cstrong%3E" +
+                   $"&q={Uri.EscapeUriString(q)}*" +
+                   $"&start={Uri.EscapeUriString(start.ToString())}" +
+                   $"&rows={Uri.EscapeUriString(rows.ToString())}";
+
+                var response = await hc.GetStringAsync(searchString);
+
+                return Content(response, "application/json");
+            }
+        }
+
+
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
