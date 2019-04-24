@@ -35,20 +35,14 @@ namespace SolrCoreSearch.Controllers
         }
 
 
-        public async Task<IActionResult> AutocompleteSearch(string q, int start, int rows)
+        public async Task<IActionResult> AutocompleteSearch(string q, int rows)
         {
             // Get search result text from the Lucene Solr Server.
             using (var hc = new HttpClient())
             {
-                //http://localhost:8983/solr/movies/select?df=title&fl=title&q=the%20fiv*
-                var searchString = $"http://localhost:8983/solr/movies/select?df=title&fl=title" +
-                   $"&hl=on" +
-                   $"&hl.fl=title" +
-                   $"&hl.simple.post=%3C%2Fstrong%3E" +
-                   $"&hl.simple.pre=%3Cstrong%3E" +
-                   $"&q={Uri.EscapeUriString(q)}*" +
-                   $"&start={Uri.EscapeUriString(start.ToString())}" +
-                   $"&rows={Uri.EscapeUriString(rows.ToString())}";
+                var searchString = $"http://localhost:8983/solr/movies/suggest?" +
+                    $"suggest.q={Uri.EscapeUriString(q)}*" +
+                    $"&rows={Uri.EscapeUriString(rows.ToString())}";
 
                 var response = await hc.GetStringAsync(searchString);
 

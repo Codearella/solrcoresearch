@@ -162,6 +162,7 @@
 
         // Initial seach button click (returns the intial set of results).
         $("#searchbutton").click(function () {
+
             if (document.getElementById("searchtext").value) { // Only search if there is text in the search box.
                 $.ajax({
                     type: "post",
@@ -204,13 +205,12 @@
 
 
         //Autocomplete
-        var countries = ["X-Men","Men in Tights","Three Men and a Little Lady","Men in the City","The Company Men","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Central Arfrican Republic","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cuba","Curacao","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauro","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","North Korea","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia","Turkey","Turkmenistan","Turks &amp; Caicos","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States of America","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"];
-        
+        var autocompleteLines = [];
 
         //Based loosely on: https://www.w3schools.com/howto/howto_js_autocomplete.asp
 
 
-        autocomplete(document.getElementById("searchtext"), countries);
+        autocomplete(document.getElementById("searchtext"), autocompleteLines);
 
         function autocomplete(inp, arr) { //inp = searchtext element, arr = array of autocomplete values
             var currentFocus;
@@ -229,88 +229,56 @@
                 this.parentNode.appendChild(a);
 
 
-                //Get the top 10 autocomplete entries and put the list into an arra.
-
-
                 // Array where the search results are stored (in preparation for HTML output)
-                var autocompleteLines = []; 
+                autocompleteLines = []; 
 
-                // Initial seach button click (returns the intial set of results).
                 // Get top 10 autocomplete titles. Performed on each keypress.
-                if (document.getElementById("searchtext").value) { // Only search if there is text in the search box.
+                var searchTextPartial = document.getElementById("searchtext").value;
+                if (searchTextPartial ) { // Only search if there is text in the search box.
+                    
                     $.ajax({
                         type: "post",
-                        url: "/home/autocompletesearch?q=" + encodeURIComponent($("#searchtext").val()) + "&start=0&rows=" +  autocompleteRows,
+                        url: "/home/autocompletesearch?q=" + encodeURIComponent($("#searchtext").val()) + "&rows=" + autocompleteRows,
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (ajaxResponse) {
-                            //$("#searchresults").empty();
-                            //addResults(0, ajaxResponse.response.docs)
-                            //console.log(ajaxResponse.response.docs);
+                            var p = ajaxResponse.suggest.fuzzySuggester[searchTextPartial + "*"].suggestions;
 
-                            //var p = ajaxResponse.response.docs
-                            //for (var key in p) {
-                            //    if (p.hasOwnProperty(key)) {
-                            //        autocompleteLines.push(p[key].title);
-                            //    }
-
-                            //}
-
-
-                            
-                            var yy = ajaxResponse.response.docs
-                            for (var key in yy) {
-                                if (yy.hasOwnProperty(key)) {
-                                    autocompleteLines.push(yy[key].title);
-                                }
-                            }
-                            //console.log(countries);
-                            
-                            
-
-                            var p = ajaxResponse.highlighting
                             for (var key in p) {
                                 if (p.hasOwnProperty(key)) {
-                                    //console.log(p[key].title[0]);
-                                    autocompleteLines.push(p[key].title[0]);
+                                    autocompleteLines.push(p[key].term);
                                 }
 
                             }
-
-
-                            countries = autocompleteLines
-                            //console.log(countries);
-
-
+                            
                             arr = autocompleteLines;
 
                             for (i = 0; i < arr.length; i++) {
 
                                 /*check if the item starts with the same letters as the text field value:*/
-                                if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                                //if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
 
                                     // Create a div element for each autocomplete item
                                     b = document.createElement("DIV");
 
                                     // Make matching text bold in autocomplete line
-                                    b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-                                    b.innerHTML += arr[i].substr(val.length);
+                                    //b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                                    //b.innerHTML += arr[i].substr(val.length);
 
-                                    console.log(b.innerHTML);
+                                    b.innerHTML = arr[i];
 
                                     //console.log(arr[i].substr(0, val.length));
 
-                                    // Insert a input field that will hold the current array item's value
+                                    // Insert a input field that will hold the current array item's value (unformatted)
+
                                     b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-
-
 
 
                                     // Execute a function when someone clicks on the item value (DIV element):
                                     b.addEventListener("click", function (e) {
-
                                         // Put the autocomplete value into the search field.
-                                        inp.value = this.getElementsByTagName("input")[0].value;
+                                        //inp.value = this.getElementsByTagName("input")[0].value; //============================================================================
+                                        $("#searchtext").val(this.getElementsByTagName("input")[0].value.replace('<strong>', '').replace('</strong>', ''));
 
                                         // Close all autocomplete lists.
                                         closeAllLists();
@@ -321,7 +289,7 @@
                                     });
 
                                     a.appendChild(b);
-                                }
+                                //}
 
                             }
 
@@ -379,7 +347,7 @@
                 }
             }
 
-            // Close all autocomplete lists except the elmnt
+            // Close all autocomplete lists except the passed in element
             function closeAllLists(elmnt) { 
                 var x = document.getElementsByClassName("autocomplete-items");
                 for (var i = 0; i < x.length; i++) {
