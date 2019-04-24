@@ -4,7 +4,7 @@ This is an ASP.NET Core MVC search web app that uses a Apache Solr (Lucene) serv
 ## Prerequisites
 
 1. Windows 10 *(Other versions may also work but have not been tested.)*
-2. Java 8 or later *(Verify using **java --version** from the command prompt. You may also need to configure your PATH system variable under System Properties > Environment Variables.)*         	
+2. Java 8 or later *(Verify using **java -version** from the command prompt. You may also need to configure your PATH system variable under System Properties > Environment Variables.)*         	
 3. curl version 7.55.1 or later
 4. solr-8.0.0 *(For Windows, use the solr-8.0.0.zip version of the file.)*
       http://lucene.apache.org/solr/downloads.html
@@ -31,7 +31,7 @@ Please enter the port for node1 [8983]:
 Please enter the port for node2 [7574]:
 ~~~~
 5. Press **enter** to accept the default port (7574).
-6. Wait while Solr starts up each node. 
+6. :coffee: Wait while Solr starts up each node.
 ~~~~
 Please provide a name for your new collection: [gettingstarted]
 ~~~~
@@ -44,7 +44,7 @@ How many shards would you like to split gettingstarted into? [2]
 How many replicas per shard would you like to create? [2]
 ~~~~
 9. Press **enter** to accept the default (2 replicas per shard).
-10. Wait for the setup to complete.
+10. :coffee: Wait for the setup to complete. 
 11. When complete, open http://localhost:8983/solr/#/ in your browser and verify that the Solr dashboard appears.
 
 ## Configure the Movies collection on the Solr server
