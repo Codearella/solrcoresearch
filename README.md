@@ -53,6 +53,7 @@ How many replicas per shard would you like to create? [2]
 ~~~~
 SetupMovies.bat
 movies.csv
+DeleteMovies.bat
 ~~~~
 **Important: The movies folder must be located in the \solr-8.0.0\example\ subfolder, or the batch file will not work correctly.**
 
@@ -104,5 +105,14 @@ Instead, my little search ActionResult will be powered by HttpClient!  It doesn�
 It wasn’t long before a Bootstrap-styled search front-end was kicking butt and taking strings.  All the mandatory features were done.  But as time was running low, I decided to pivot towards writing and testing the setup instructions.
 
 Regretfully, there was some low hanging “advanced” fruit left on the tree. For faceting, the eventual plan was to issue two searches (one to get the genre hit counts, and one to fetch the actual search results), and to list the top genres as clickable buttons at the top of the search query to give you a one-click filter. However, I didn't have a chance to finish this.
+
+***Update 2019-04-24:*** I added in the autocomplete functionality using Solr's Suggester features. This was a bit frustrating to set up; Solr warns against editing the XML config file, yet most of the examples for the suggester tell you use this legacy method to edit the config. Also, the Solr 8.0.0. manual is still in draft mode, so not much help there. At any rate, I didn't want to make it hard for the end user to set things up, so I knew I had to do this with CURL in the batch file. After a bit of trial and error, I managed to cobble together the correct commands to update the Solr Suggester config using JSON and Curl. In addition to the updated *SetupMovies.bat* file, I added a *DeleteMovies.bat* file to quickly wipe out the existing Movies collection and associated config. 
+
+
+
+
+
+
+
 
 
