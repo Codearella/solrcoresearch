@@ -111,17 +111,7 @@
             var items = array.slice();
             items[items.length - 1] = "and " + items[items.length - 1];
             return items.join(items.length === 2 ? " " : ", ");
-        }
-
-        // --------------------This should only happen if there are no autocompletes showing.
-        //// Cause "Enter" button to execute the search (i.e. same as clicking the search icon).
-        //$("#searchtext").keydown(function (e) {
-        //    if (e.keyCode === 13) {
-        //        $("#searchbutton").click();
-        //        e.preventDefault();
-        //    }
-        //});
-
+        }        
 
         // Apply formatting and append new results.
         function addResults(start, results) {
@@ -202,13 +192,11 @@
         });
 
 
+        //Autocomplete based loosely on: https://www.w3schools.com/howto/howto_js_autocomplete.asp =====================================================================
 
-
+                       
         //Autocomplete
         var autocompleteLines = [];
-
-        //Based loosely on: https://www.w3schools.com/howto/howto_js_autocomplete.asp
-
 
         autocomplete(document.getElementById("searchtext"), autocompleteLines);
 
@@ -228,8 +216,7 @@
                 a.setAttribute("class", "autocomplete-items");
                 this.parentNode.appendChild(a);
 
-
-                // Array where the search results are stored (in preparation for HTML output)
+                // Clear the array in preparation for the next set of results.
                 autocompleteLines = []; 
 
                 // Get top 10 autocomplete titles. Performed on each keypress.
@@ -318,9 +305,11 @@
                 currentFocus--;
                     addActive(x);
 
-                // ENTER key pressed: Prevent the form from being submitted and simulate a click on the "Active" item. +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                // ENTER key pressed: Prevent the form from being submitted.
                 } else if (e.keyCode == 13) { 
                     e.preventDefault();
+
+                    // Simulate a click on the active item (if one of the autocomplete items is active)
                     if (currentFocus > -1) {
                         if (x) x[currentFocus].click(); 
                     }
@@ -362,20 +351,6 @@
             closeAllLists(e.target);
         });
       }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     </script>

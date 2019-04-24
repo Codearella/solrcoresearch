@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SolrCoreSearch.Models;
@@ -11,9 +9,8 @@ namespace SolrCoreSearch.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<IActionResult> Index()
+        public ActionResult Index()
         {
-   
             return View();
         }
 
@@ -37,7 +34,7 @@ namespace SolrCoreSearch.Controllers
 
         public async Task<IActionResult> AutocompleteSearch(string q, int rows)
         {
-            // Get search result text from the Lucene Solr Server.
+            // Get autocomplete text from the Lucene Solr Server.
             using (var hc = new HttpClient())
             {
                 var searchString = $"http://localhost:8983/solr/movies/suggest?" +
@@ -49,8 +46,6 @@ namespace SolrCoreSearch.Controllers
                 return Content(response, "application/json");
             }
         }
-
-
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
