@@ -40,55 +40,22 @@
             
         }
 
-        .panel-title { font-weight:bold; }
-
-                       
-        /* CSS styles for autocomplete */
-
-        .autocomplete {          
-          position: relative;
-          display: inline-block;
-        }
-        
-        .autocomplete-items {
-          position: absolute;
-          border: 1px solid #d4d4d4;
-          border-bottom: none;
-          border-top: none;
-          z-index: 99;
-          top: 100%; 
-          left: 0;
-          right: 0;
-        }
-
-        .autocomplete-items div {
-          padding: 10px;
-          cursor: pointer;
-          background-color: #fff; 
-          border-bottom: 1px solid #d4d4d4; 
-        }
-
-        .autocomplete-items div:hover {
-          background-color: #e9e9e9; 
-        }
-
-        .autocomplete-active {
-          background-color: #337ab7 !important; 
-          color: #ffffff; 
-        }
+        .panel-title { font-weight:bold; }    
 
     </style>
 }
 
 @section scripts
 {
+    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.1.0/dist/latest/bootstrap-autocomplete.min.js"></script>
     <script type="text/javascript">
 
         // Number of results rows to send back at a time (10).
         var pageRows = 10;
         var autocompleteRows = 10;
+        var autocompleteLines = [];
 
-        // ============================================================================================================================================================================
+        // Encode the HTML.
         var $converter = $("<div>");
         function htmlEncode(s) {
             return $converter.text(s).html();
@@ -116,7 +83,7 @@
         // Apply formatting and append new results.
         function addResults(start, results) {
 
-            // Array where the search results are stored (in preparation for HTML output)
+            // Array where the search results are stored (in preparation for HTML output).
             var lines = []; 
 
             var resultCount = results.length;
@@ -149,6 +116,16 @@
                     "</p>");
             }
         }
+
+        $("#searchtext").keydown(function (e) {
+            // If they press the enter key.
+            if (e.keyCode == 13) {
+                // Execute the search.
+                $("#searchbutton").click();
+                e.preventDefault();
+            }
+
+        });
 
         // Initial seach button click (returns the intial set of results).
         $("#searchbutton").click(function () {
@@ -191,166 +168,38 @@
             })
         });
 
-
-        //Autocomplete based loosely on: https://www.w3schools.com/howto/howto_js_autocomplete.asp =====================================================================
-
-                       
-        //Autocomplete
-        var autocompleteLines = [];
-
-        autocomplete(document.getElementById("searchtext"), autocompleteLines);
-
-        function autocomplete(inp, arr) { //inp = searchtext element, arr = array of autocomplete values
-            var currentFocus;
-            inp.addEventListener("input", function(e) { //Event Listener on the text input field.
-                var a, b, i, val = this.value;
-
-                // Close any open lists and remove focus. 
-                closeAllLists();
-                if (!val) { return false;}
-                currentFocus = -1;
-
-                // Create the autocomplete list and append it to the search field.
-                a = document.createElement("DIV");
-                a.setAttribute("id", this.id + "autocomplete-list");
-                a.setAttribute("class", "autocomplete-items");
-                this.parentNode.appendChild(a);
-
-                // Clear the array in preparation for the next set of results.
-                autocompleteLines = []; 
-
-                // Get top 10 autocomplete titles. Performed on each keypress.
-                var searchTextPartial = document.getElementById("searchtext").value;
-                if (searchTextPartial ) { // Only search if there is text in the search box.
-                    
+        // Autocomplete code
+        $('#searchtext').autoComplete({
+            resolver: 'custom',
+            events: {
+                search: function (qry, callback) {
+                    var searchText = $("#searchtext").val();
                     $.ajax({
                         type: "post",
-                        url: "/home/autocompletesearch?q=" + encodeURIComponent($("#searchtext").val()) + "&rows=" + autocompleteRows,
+                        url: "/home/autocompletesearch?q=" + encodeURIComponent(searchText) + "&rows=" + autocompleteRows,
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (ajaxResponse) {
-                            var p = ajaxResponse.suggest.fuzzySuggester[searchTextPartial + "*"].suggestions;
-
-                            for (var key in p) {
-                                if (p.hasOwnProperty(key)) {
-                                    autocompleteLines.push(p[key].term);
+                            var autocompleteLines = [];
+                            for (var item in ajaxResponse.suggest.fuzzySuggester) {
+                                var p = ajaxResponse.suggest.fuzzySuggester[item].suggestions;
+                                for (var key in p) {
+                                    if (p.hasOwnProperty(key)) {
+                                        autocompleteLines.push(p[key].term);
+                                    }
                                 }
-
-                            }
-                            
-                            arr = autocompleteLines;
-
-                            for (i = 0; i < arr.length; i++) {
-
-                                /*check if the item starts with the same letters as the text field value:*/
-                                //if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-
-                                    // Create a div element for each autocomplete item
-                                    b = document.createElement("DIV");
-
-                                    // Make matching text bold in autocomplete line
-                                    //b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-                                    //b.innerHTML += arr[i].substr(val.length);
-
-                                    b.innerHTML = arr[i];
-
-                                    //console.log(arr[i].substr(0, val.length));
-
-                                    // Insert a input field that will hold the current array item's value (unformatted)
-
-                                    b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-
-
-                                    // Execute a function when someone clicks on the item value (DIV element):
-                                    b.addEventListener("click", function (e) {
-                                        // Put the autocomplete value into the search field.
-                                        //inp.value = this.getElementsByTagName("input")[0].value; //============================================================================
-                                        $("#searchtext").val(this.getElementsByTagName("input")[0].value.replace('<strong>', '').replace('</strong>', ''));
-
-                                        // Close all autocomplete lists.
-                                        closeAllLists();
-
-                                        // Execute the search.
-                                        $("#searchbutton").click();
-
-                                    });
-
-                                    a.appendChild(b);
-                                //}
-
                             }
 
-
-
-
-
+                            callback(autocompleteLines);                            
                         }
                     });
                 }
-              });
-
-            // Keyboard navigation for autocomplete list: 
-            inp.addEventListener("keydown", function(e) {
-                var x = document.getElementById(this.id + "autocomplete-list");
-                if (x) x = x.getElementsByTagName("div");
-
-                // DOWN key pressed: move to the next item in the autocomplete list.
-                if (e.keyCode == 40) { 
-                currentFocus++; 
-                addActive(x);
-                }
-
-                // UP key pressed: move to the next item in the autocomplete list.
-                else if (e.keyCode == 38) { 
-                currentFocus--;
-                    addActive(x);
-
-                // ENTER key pressed: Prevent the form from being submitted.
-                } else if (e.keyCode == 13) { 
-                    e.preventDefault();
-
-                    // Simulate a click on the active item (if one of the autocomplete items is active)
-                    if (currentFocus > -1) {
-                        if (x) x[currentFocus].click(); 
-                    }
-
-                    // Execute the search.
-                    $("#searchbutton").click();
-
-                }
-            });
-
-            //Make an item "active"
-            function addActive(x) {
-                if (!x) return false;
-                removeActive(x);
-                if (currentFocus >= x.length) currentFocus = 0;
-                if (currentFocus < 0) currentFocus = (x.length - 1);
-                x[currentFocus].classList.add("autocomplete-active");
             }
-
-            // Remove the "Active" highlighting from the autocomplete list.
-            function removeActive(x) {
-                for (var i = 0; i < x.length; i++) {
-                    x[i].classList.remove("autocomplete-active");
-                }
-            }
-
-            // Close all autocomplete lists except the passed in element
-            function closeAllLists(elmnt) { 
-                var x = document.getElementsByClassName("autocomplete-items");
-                for (var i = 0; i < x.length; i++) {
-                    if (elmnt != x[i] && elmnt != inp) {
-                        x[i].parentNode.removeChild(x[i]);
-                }
-            }
-        }
-
-        // Close the autocomplete lists when someone clicks elsewhere on the document.
-        document.addEventListener("click", function (e) {
-            closeAllLists(e.target);
         });
-      }
+
+        $("#searchtext").on("autocomplete.select", function (evt, item) {
+            $("#searchbutton").click();
+        });
 
 
     </script>
